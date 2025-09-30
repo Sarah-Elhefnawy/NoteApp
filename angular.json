@@ -7,7 +7,17 @@
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
-          "style": "scss"
+          "style": "scss",
+          "type": "component"
+        },
+        "@schematics/angular:interceptor": {
+          "typeSeparator": "-"
+        },
+        "@schematics/angular:interface": {
+          "type": "interface"
+        },
+        "@schematics/angular:service": {
+          "type": "service"
         }
       },
       "root": "",
