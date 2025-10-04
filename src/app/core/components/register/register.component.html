@@ -1,1 +1,106 @@
-<p>register works!</p>
+<div class="card-container">
+    <mat-card class="unified-card">
+        <div class="card-content">
+            <!-- Form Section -->
+            <div class="form-section">
+                <mat-card-header class="form-header">
+                    <mat-card-title>Create Account</mat-card-title>
+                    <mat-card-subtitle>Join us today!</mat-card-subtitle>
+                </mat-card-header>
+
+                <mat-card-content>
+                    <form [formGroup]="signupForm" (ngSubmit)="submitForm()">
+                        <!-- Name Field -->
+                        <mat-form-field appearance="outline" class="clean-field">
+                            <mat-label>Full Name</mat-label>
+                            <mat-icon matPrefix>person</mat-icon>
+                            <input matInput type="text" formControlName="name">
+                            @if (signupForm.get('name')?.hasError('required')) {
+                            <mat-error>Name is required</mat-error>
+                            }
+                            @if (signupForm.get('name')?.hasError('minlength')) {
+                            <mat-error>Name must be at least 3 characters</mat-error>
+                            }
+                            @if (signupForm.get('name')?.hasError('maxlength')) {
+                            <mat-error>Name cannot exceed 20 characters</mat-error>
+                            }
+                        </mat-form-field>
+
+                        <!-- Age Field -->
+                        <mat-form-field appearance="outline" class="clean-field">
+                            <mat-label>Age</mat-label>
+                            <mat-icon matPrefix>calendar_today</mat-icon>
+                            <input matInput type="number" formControlName="age">
+                            @if (signupForm.get('age')?.hasError('required')) {
+                            <mat-error>Age is required</mat-error>
+                            }
+                        </mat-form-field>
+
+                        <!-- Phone Field -->
+                        <mat-form-field appearance="outline" class="clean-field">
+                            <mat-label>Phone</mat-label>
+                            <mat-icon matPrefix>phone</mat-icon>
+                            <input matInput type="tel" formControlName="phone">
+                            @if (signupForm.get('phone')?.hasError('required')) {
+                            <mat-error>Phone is required</mat-error>
+                            }
+                        </mat-form-field>
+
+                        <!-- Email Field -->
+                        <mat-form-field appearance="outline" class="clean-field">
+                            <mat-label>Email</mat-label>
+                            <mat-icon matPrefix>email</mat-icon>
+                            <input matInput type="email" formControlName="email">
+                            @if (signupForm.get('email')?.hasError('required')) {
+                            <mat-error>Email is required</mat-error>
+                            }
+                            @if (signupForm.get('email')?.hasError('email')) {
+                            <mat-error>Invalid email format</mat-error>
+                            }
+                        </mat-form-field>
+
+                        <!-- Password Field -->
+                        <mat-form-field appearance="outline" class="clean-field">
+                            <mat-label>Password</mat-label>
+                            <mat-icon matPrefix>lock</mat-icon>
+                            <input matInput type="password" formControlName="password">
+                            @if (signupForm.get('password')?.hasError('required')) {
+                            <mat-error>Password is required</mat-error>
+                            }
+                            @if (signupForm.get('password')?.hasError('minlength')) {
+                            <mat-error>Password must be at least 6 characters</mat-error>
+                            }
+                        </mat-form-field>
+
+                        <button mat-raised-button color="primary" type="submit" [disabled]="signupForm.invalid"
+                            class="submit-button">
+                            Sign Up
+                        </button>
+                        @if (errorMsg) {
+                        <div class="error-container">
+                            <mat-error class="server-error">
+                                <mat-icon>error_outline</mat-icon>
+                                {{errorMsg}}
+                            </mat-error>
+                        </div>
+                        }
+
+                        <!-- Register link -->
+                        <div class="login-link">
+                            <p>Already have an account?
+                                <a routerLink="/logIn" class="link">LogIn</a>
+                            </p>
+                        </div>
+                    </form>
+                </mat-card-content>
+            </div>
+
+            <!-- Image Section -->
+            <div class="image-section">
+                <div class="image-container">
+                    <img src="./images/signup-image.jpg" alt="Sign Up" class="side-image">
+                </div>
+            </div>
+        </div>
+    </mat-card>
+</div>
