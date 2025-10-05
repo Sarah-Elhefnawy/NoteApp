@@ -43,6 +43,8 @@ export class LoginComponent {
       this._AuthService.postSignIn(this.signinForm.value).subscribe({
         next: (response) => {
           console.log('LogIn successful', response);
+          localStorage.setItem('token', response.token)
+          this._AuthService.setUserToken()
           this._Router.navigate(['/home'])
         },
         error: (error) => {

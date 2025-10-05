@@ -8,7 +8,9 @@ import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterOutlet } from '@angular/router';
+import { FooterComponent } from "../footer/footer.component";
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-my-nav',
@@ -21,15 +23,22 @@ import { RouterLink } from '@angular/router';
     MatListModule,
     MatIconModule,
     AsyncPipe,
-    RouterLink
-]
+    RouterLink,
+    RouterOutlet,
+    FooterComponent
+  ]
 })
 export class MyNavComponent {
   private breakpointObserver = inject(BreakpointObserver);
+  private _AuthService = inject(AuthService);
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
       map(result => result.matches),
       shareReplay()
     );
+
+  logOutBtn(){
+    this._AuthService.logOut()
+  }
 }
