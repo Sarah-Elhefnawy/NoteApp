@@ -32,13 +32,27 @@ export class MyNavComponent {
   private breakpointObserver = inject(BreakpointObserver);
   private _AuthService = inject(AuthService);
 
+  isLoggedIn!: boolean;
+
+  private checkAuthState() {
+    const token = this._AuthService.userToken.getValue();
+    this.isLoggedIn = !!(token && token !== 'null' && token !== 'undefined' && token.trim() !== '');
+  }
+
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
       map(result => result.matches),
       shareReplay()
     );
 
-  logOutBtn(){
+  logOutBtn() {
     this._AuthService.logOut()
+  }
+
+  ngOnInit(): void {
+    this.checkAuthState();
+    this._AuthService.userToken.subscribe(() => {
+      this.checkAuthState();
+    });
   }
 }

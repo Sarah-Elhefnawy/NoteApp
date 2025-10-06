@@ -49,7 +49,7 @@ export class RegisterComponent {
     this._AuthService.postSignUp(this.signupForm.value).subscribe({
       next: (response) => {
         console.log('Signup successful', response);
-        this._Router.navigate(['/logIn'])
+        this._Router.navigate(['/login'])
       },
       error: (error) => {
         console.error('Signup failed', error);

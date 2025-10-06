@@ -1,52 +1,51 @@
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav #drawer class="sidenav" fixedInViewport
-      [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
-      [mode]="(isHandset$ | async) ? 'over' : 'side'"
-      [opened]="(isHandset$ | async) === false">
-    
+  <mat-sidenav #drawer class="sidenav" fixedInViewport [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="(isHandset$ | async) === false">
+
     <!-- Sidenav Header -->
     <div class="sidenav-header">
       <div class="logo-container">
-        <img src="./ballpoint_pen_stationery_notes_paper_sticky_note_icon_256745.png" alt="NoteApp Logo" class="nav-logo">
+        <img src="./ballpoint_pen_stationery_notes_paper_sticky_note_icon_256745.png" alt="NoteApp Logo"
+          class="nav-logo">
         <span class="app-name">NoteApp</span>
       </div>
     </div>
 
     <!-- Navigation Links -->
     <mat-nav-list class="nav-list">
-      <a mat-list-item routerLink="/logIn" class="nav-link">
+
+      @if(!isLoggedIn){
+      <a mat-list-item routerLink="/login" class="nav-link">
         <mat-icon>login</mat-icon>
         <span class="link-text">Login</span>
       </a>
-      
+
       <a mat-list-item routerLink="/register" class="nav-link">
         <mat-icon>person_add</mat-icon>
         <span class="link-text">Sign Up</span>
       </a>
-      
+      }
+
+      @if(isLoggedIn){
       <a mat-list-item class="nav-link" (click)="logOutBtn()">
         <mat-icon>logout</mat-icon>
         <span class="link-text">Logout</span>
       </a>
+      }
     </mat-nav-list>
   </mat-sidenav>
-  
+
   <mat-sidenav-content>
     <div class="top-bar">
-      <button
-        type="button"
-        aria-label="Toggle sidenav"
-        mat-icon-button
-        (click)="drawer.toggle()"
-        class="menu-button">
+      <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()" class="menu-button">
         <img src="./ballpoint_pen_stationery_notes_paper_sticky_note_icon_256745.png" alt="Menu" class="menu-icon">
       </button>
     </div>
-    
+
     <main class="main-content">
       <router-outlet></router-outlet>
     </main>
-    
+
     <app-footer></app-footer>
   </mat-sidenav-content>
 </mat-sidenav-container>

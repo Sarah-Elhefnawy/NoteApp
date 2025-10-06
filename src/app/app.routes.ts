@@ -12,7 +12,7 @@ export const routes: Routes = [
 
     {
         path: '', component: AuthLayoutComponent, children: [
-            { path: 'logIn', component: LoginComponent, title: 'Login' },
+            { path: 'login', component: LoginComponent, title: 'Login' },
             { path: 'register', component: RegisterComponent, title: 'Register' }
         ]
     },
