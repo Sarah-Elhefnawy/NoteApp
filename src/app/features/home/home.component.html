@@ -1,1 +1,127 @@
-<p>home works!</p>
+<div class="home-container">
+  <!-- Header -->
+  <div class="header">
+    <h1 class="welcome-text">Welcome to Your Notes</h1>
+    <p class="subtitle">Organize your thoughts and ideas</p>
+    <button mat-fab color="primary" class="add-fab" (click)="openAddNoteDialog()" matTooltip="Add New Note">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+    <!-- Loading State -->
+    @if (isLoading()) {
+      <div class="loading-state">
+        <p>Loading your notes...</p>
+      </div>
+    }
+
+    <!-- Empty State -->
+    @else if (notes().length === 0) {
+      <div class="empty-state">
+        <div class="empty-illustration">
+          <mat-icon>note_add</mat-icon>
+        </div>
+        <h3>No notes yet</h3>
+        <p>Start by creating your first note</p>
+        <button mat-raised-button color="primary" (click)="openAddNoteDialog()">
+          Create Your First Note
+        </button>
+      </div>
+    }
+
+    <!-- Notes Grid -->
+    @else {
+      <div class="notes-section">
+        <div class="stats-bar">
+          <span class="notes-count">{{ notes().length }} note{{ notes().length !== 1 ? 's' : '' }}</span>
+        </div>
+
+        <div class="notes-grid">
+          @for (note of notes(); track note._id) {
+            <div class="note-card">
+              <div class="note-header">
+                <h3 class="note-title">{{ note.title || 'Untitled' }}</h3>
+                <div class="note-actions">
+                  <button mat-icon-button (click)="openEditDialog(note)" class="action-btn">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button mat-icon-button (click)="deleteNote(note._id)" class="action-btn delete">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+              
+              <p class="note-content">{{ note.content }}</p>
+              
+              <div class="note-footer">
+                <span class="note-date">{{ formatDate(note.createdAt) }}</span>
+                @if (note.updatedAt !== note.createdAt) {
+                  <span class="note-updated">Edited</span>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Add/Edit Note Dialog -->
+  @if (showAddDialog() || isEditMode()) {
+    <div class="dialog-overlay" (click)="isEditMode() ? closeEditDialog() : closeAddNoteDialog()">
+      <div class="dialog-card" (click)="$event.stopPropagation()">
+        <div class="dialog-header">
+          <h2>{{ isEditMode() ? 'Edit Note' : 'New Note' }}</h2>
+          <button mat-icon-button class="close-btn" (click)="isEditMode() ? closeEditDialog() : closeAddNoteDialog()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
+        <form [formGroup]="noteForm" (ngSubmit)="isEditMode() ? saveEdit() : addNote()">
+          <div class="form-fields">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Title</mat-label>
+              <input matInput formControlName="title" placeholder="Enter note title">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Content</mat-label>
+              <textarea matInput formControlName="content" placeholder="Write your note here..." 
+                       rows="8"></textarea>
+            </mat-form-field>
+          </div>
+
+          <div class="dialog-actions">
+            <button mat-button type="button" 
+                    (click)="isEditMode() ? closeEditDialog() : closeAddNoteDialog()">
+              Cancel
+            </button>
+            <button mat-raised-button color="primary" type="submit" 
+                    [disabled]="noteForm.invalid">
+              {{ isEditMode() ? 'Update' : 'Create' }} Note
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+
+  <!-- Delete Confirmation -->
+  @if (showDeleteConfirm()) {
+    <div class="dialog-overlay" (click)="closeDeleteConfirm()">
+      <div class="dialog-card confirm-dialog" (click)="$event.stopPropagation()">
+        <div class="dialog-icon warning">
+          <mat-icon>delete_outline</mat-icon>
+        </div>
+        <h3>Delete Note?</h3>
+        <p>This action cannot be undone. The note will be permanently deleted.</p>
+        <div class="dialog-actions">
+          <button mat-button (click)="closeDeleteConfirm()">Cancel</button>
+          <button mat-raised-button color="warn" (click)="confirmDelete()">Delete</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

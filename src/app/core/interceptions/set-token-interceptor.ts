@@ -3,16 +3,15 @@ import { inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 export const setTokenInterceptor: HttpInterceptorFn = (req, next) => {
-  const _PLATFORM_ID = inject(PLATFORM_ID);
+  const platformId = inject(PLATFORM_ID);
 
-
-  if (isPlatformBrowser(_PLATFORM_ID)) {
+  if (isPlatformBrowser(platformId)) {
     try {
       const token = localStorage.getItem('token');
       if (token) {
         req = req.clone({
           setHeaders: {
-            token: token
+            token: `3b8ny__${token}`
           }
         });
       }
