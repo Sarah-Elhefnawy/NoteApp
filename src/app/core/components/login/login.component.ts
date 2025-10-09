@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from './../../services/auth.service';
 
@@ -26,7 +26,7 @@ import { Router, RouterLink } from '@angular/router';
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
-  errorMsg: string = ''
+  errorMsg = signal<string>('');
 
   private readonly _AuthService = inject(AuthService)
   private readonly _Router = inject(Router)
@@ -49,7 +49,7 @@ export class LoginComponent {
         },
         error: (error) => {
           console.error('LogIn failed', error);
-          this.errorMsg = error.error.msg || 'An error occurred during Logging in';
+          this.errorMsg.set(error.error.msg);
         }
       })
     }

@@ -27,6 +27,16 @@
       }
 
       @if(isLoggedIn){
+      <a mat-list-item routerLink="/home" class="nav-link">
+        <mat-icon>home</mat-icon>
+        <span class="link-text">Home</span>
+      </a>
+
+      <a mat-list-item routerLink="/account" class="nav-link">
+        <mat-icon>account_circle</mat-icon>
+        <span class="link-text">Account</span>
+      </a>
+
       <a mat-list-item class="nav-link" (click)="logOutBtn()">
         <mat-icon>logout</mat-icon>
         <span class="link-text">Logout</span>

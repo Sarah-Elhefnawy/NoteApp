@@ -1,8 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from './../../services/auth.service';
-
-
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -10,7 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterLink } from '@angular/router';
-
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-register',
@@ -27,16 +25,17 @@ import { Router, RouterLink } from '@angular/router';
   styleUrl: './register.component.scss'
 })
 export class RegisterComponent {
-  errorMsg:string = '';
+  errorMsg = signal<string>('');
 
   private readonly _AuthService = inject(AuthService)
   private readonly _Router = inject(Router)
+  private readonly _UserService = inject(UserService);
 
   signupForm: FormGroup = new FormGroup({
     name: new FormControl('', [Validators.required, Validators.minLength(3), Validators.maxLength(20)]),
     age: new FormControl('', [Validators.required]),
     // phone: new FormControl('', [Validators.required]),
-    phone:  new FormControl('', [Validators.required, Validators.pattern(/^01[0125][0-9]{8}$/)]),
+    phone: new FormControl('', [Validators.required, Validators.pattern(/^01[0125][0-9]{8}$/)]),
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required, Validators.minLength(6)])
     // password:  new FormControl('', [Validators.required, Validators.pattern(/^\w{6,}$/)])
@@ -44,18 +43,27 @@ export class RegisterComponent {
   });
 
   submitForm(): void {
-  if (this.signupForm.valid) {
-    this.errorMsg = '';
-    this._AuthService.postSignUp(this.signupForm.value).subscribe({
-      next: (response) => {
-        console.log('Signup successful', response);
-        this._Router.navigate(['/login'])
-      },
-      error: (error) => {
-        console.error('Signup failed', error);
-        this.errorMsg = error.error.msg || 'An error occurred during signup';
-      }
-    })
+    if (this.signupForm.valid) {
+      this.errorMsg.set('');
+      this._AuthService.postSignUp(this.signupForm.value).subscribe({
+        next: (response) => {
+          console.log('Signup successful', response);
+
+          // Save user data using the service
+          this._UserService.saveUserProfile({
+            name: this.signupForm.value.name,
+            email: this.signupForm.value.email,
+            age: this.signupForm.value.age,
+            phone: this.signupForm.value.phone
+          });
+
+          this._Router.navigate(['/login']);
+        },
+        error: (error) => {
+          console.error('Signup failed', error);
+          this.errorMsg.set(error.error.msg || 'An error occurred during signup');
+        }
+      });
+    }
   }
-}
 }

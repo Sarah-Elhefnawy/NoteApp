@@ -29,14 +29,13 @@ import { Note } from '../../core/interfaces/note.interface';
 export class HomeComponent implements OnInit {
   private readonly _NoteService = inject(NoteService);
   private _AuthService = inject(AuthService);
-  private _Router = inject(Router);
 
   notes = signal<Note[]>([]);
   showAddDialog = signal(false);
   showDeleteConfirm = signal(false);
   isEditMode = signal(false);
   isLoading = signal(true);
-  
+
   noteToDelete: string | null = null;
   editingNote: Note | null = null;
 
@@ -53,19 +52,28 @@ export class HomeComponent implements OnInit {
 
   // GET Notes
   getAllNotes() {
+    // Check if user is authenticated first
+    const token = this._AuthService.userToken.getValue();
+    if (!token) {
+      console.log('No token available, skipping notes fetch');
+      this.isLoading.set(false);
+      return;
+    }
+
     this.isLoading.set(true);
     this._NoteService.getNotes().subscribe({
       next: (response) => {
-        console.log('Notes:', response);
+        console.log('Notes loaded successfully:', response);
         this.notes.set(response.notes || []);
         this.isLoading.set(false);
       },
       error: (error) => {
         console.error('Error fetching notes:', error);
         this.isLoading.set(false);
+
+        // If token is invalid, redirect to login
         if (error.status === 404 && error.error.msg === 'token not found') {
           this._AuthService.logOut();
-          this._Router.navigate(['/login']);
         }
       }
     });
@@ -76,7 +84,7 @@ export class HomeComponent implements OnInit {
     if (this.noteForm.valid) {
       this._NoteService.addNotes(this.noteForm.value).subscribe({
         next: (response) => {
-          console.log('Note added:', response);
+          // console.log('Note added:', response);
           this.getAllNotes();
           this.closeAddNoteDialog();
         },
@@ -110,7 +118,7 @@ export class HomeComponent implements OnInit {
     if (this.noteForm.valid && this.editingNote) {
       this._NoteService.updateNote(this.noteForm.value, this.editingNote._id).subscribe({
         next: (response) => {
-          console.log('Note updated successfully:', response);
+          // console.log('Note updated successfully:', response);
           this.getAllNotes();
           this.closeEditDialog();
         },
@@ -137,7 +145,7 @@ export class HomeComponent implements OnInit {
     if (this.noteToDelete) {
       this._NoteService.deleteNote(this.noteToDelete).subscribe({
         next: (response) => {
-          console.log('Note deleted successfully:', response);
+          // console.log('Note deleted successfully:', response);
           this.getAllNotes();
           this.closeDeleteConfirm();
         },

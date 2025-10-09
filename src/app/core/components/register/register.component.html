@@ -76,11 +76,11 @@
                             class="submit-button">
                             Sign Up
                         </button>
-                        @if (errorMsg) {
+                        @if (errorMsg()) {
                         <div class="error-container">
                             <mat-error class="server-error">
                                 <mat-icon>error_outline</mat-icon>
-                                {{errorMsg}}
+                                {{errorMsg()}}
                             </mat-error>
                         </div>
                         }
