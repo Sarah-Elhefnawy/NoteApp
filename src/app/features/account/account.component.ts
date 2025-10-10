@@ -81,7 +81,7 @@ export class AccountComponent {
       }
     }
 
-    return 'Recently'; // Fallback
+    return 'Recently';
   }
 
   formatDate(timestamp: number): string {

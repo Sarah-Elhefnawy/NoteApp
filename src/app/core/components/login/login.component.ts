@@ -10,6 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterLink } from '@angular/router';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-login',
@@ -29,6 +30,7 @@ export class LoginComponent {
   errorMsg = signal<string>('');
 
   private readonly _AuthService = inject(AuthService)
+  private readonly _UserService = inject(UserService)
   private readonly _Router = inject(Router)
 
   signinForm: FormGroup = new FormGroup({
@@ -42,16 +44,21 @@ export class LoginComponent {
     if (this.signinForm.valid) {
       this._AuthService.postSignIn(this.signinForm.value).subscribe({
         next: (response) => {
-          console.log('LogIn successful', response);
-          localStorage.setItem('token', response.token)
-          this._AuthService.setUserToken()
-          this._Router.navigate(['/home'])
+          // console.log('LogIn successful', response);
+          localStorage.setItem('token', response.token);
+
+          // Load user profile data after successful login
+          const userEmail = this.signinForm.value.email;
+          this._UserService.loadUserProfile(userEmail);
+
+          this._AuthService.setUserToken(response.token);
+          this._Router.navigate(['/home']);
         },
         error: (error) => {
           console.error('LogIn failed', error);
           this.errorMsg.set(error.error.msg);
         }
-      })
+      });
     }
   }
 }

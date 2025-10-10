@@ -47,10 +47,11 @@ export class RegisterComponent {
       this.errorMsg.set('');
       this._AuthService.postSignUp(this.signupForm.value).subscribe({
         next: (response) => {
-          console.log('Signup successful', response);
+          // console.log('Signup successful', response);
 
-          // Save user data using the service
+          // Save user data with ID from response
           this._UserService.saveUserProfile({
+            id: response.user.id, // Assuming your API returns user ID
             name: this.signupForm.value.name,
             email: this.signupForm.value.email,
             age: this.signupForm.value.age,

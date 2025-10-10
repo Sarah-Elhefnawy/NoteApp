@@ -43,22 +43,20 @@ export class AuthService {
     return this.httpClient.post(`${this.apiBaseUrl}users/signIn`, payload)
   }
 
-  setUserToken() {
-    if (typeof localStorage !== 'undefined' && localStorage) {
-      try {
-        let token = localStorage.getItem('token');
-        if (token != null && token !== 'null' && token !== 'undefined') {
-          this.userToken.next(token);
-        }
-      } catch (error) {
-        console.warn('Could not access localStorage:', error);
-      }
+  setUserToken(token: string): void {
+  if (typeof localStorage !== 'undefined' && localStorage) {
+    try {
+      localStorage.setItem('token', token);
+      this.userToken.next(token);
+    } catch (error) {
+      console.warn('Could not access localStorage:', error);
     }
   }
+}
 
-  logOut() {
-    localStorage.removeItem('token');
-    this.userToken.next(null)
-    this._Router.navigate(['/login'])
-  }
+logOut() {
+  localStorage.removeItem('token');
+  this.userToken.next(null);
+  this._Router.navigate(['/login']);
+}
 }
