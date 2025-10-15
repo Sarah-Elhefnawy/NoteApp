@@ -6,10 +6,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { NoteService } from '../../core/services/note.service';
 import { AuthService } from '../../core/services/auth.service';
-import { Router } from '@angular/router';
 import { Note } from '../../core/interfaces/note.interface';
 
 @Component({
@@ -163,12 +161,20 @@ export class HomeComponent implements OnInit {
   }
 
   formatDate(dateString: string): string {
+    // Create date in UTC to avoid timezone issues
     const date = new Date(dateString);
     const now = new Date();
-    const diffTime = Math.abs(now.getTime() - date.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-    if (diffDays === 1) {
+    // Use UTC dates for comparison to avoid timezone problems
+    const utcDate = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
+    const utcNow = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+
+    const diffTime = Math.abs(utcNow - utcDate);
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) {
+      return 'Today';
+    } else if (diffDays === 1) {
       return 'Yesterday';
     } else if (diffDays < 7) {
       return `${diffDays} days ago`;
